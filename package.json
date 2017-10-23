@@ -1,0 +1,11 @@
+{
+  "name": "newlink",
+  "version": "1.0.0",
+  "description": "topdown RPG with Phaser, node and OGA assets",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Michael Cline",
+  "license": "ISC"
+}
