@@ -8,7 +8,12 @@ var sm = new spriteManager();
 var ui = new userInterface();
 var enemyList = [];
 var busyTimer = null;
-
+var mouse = {
+  x: 0,
+  y: 0,
+  left: null,
+  right: null
+};
 TopDownGame.Game.prototype = {
   mapName: null,
   playerStart: 0,
@@ -20,6 +25,7 @@ TopDownGame.Game.prototype = {
     this.env = env;
   },
   create: function () {
+    this.game.scale.setGameSize(800, 600);
     console.log(this.mapName);
     this.map = this.game.add.tilemap(this.mapName);
     this.map.addTilesetImage('env', this.env);
@@ -91,6 +97,12 @@ TopDownGame.Game.prototype = {
     let sprite = player.sprite;
     sprite.body.velocity.x = 0;
     sprite.body.velocity.y = 0;
+
+    mouse.x = this.game.input.worldX;
+    mouse.y = this.game.input.worldY;
+    mouse.left = this.game.input.activePointer.leftButton.isDown;
+    mouse.right = this.game.input.activePointer.rightButton.isDown;
+
     this.game.physics.arcade.collide(sprite, blocked);
     this.game.physics.arcade.collide(sprite, sm.objects, player.touching, null, player);
 
@@ -102,9 +114,8 @@ TopDownGame.Game.prototype = {
       v = player.runSpeed;
     }
 
-    player.command(this.keys);
-
-    player.move(player.facing, v);
+    player.command(this.keys, mouse);
+    player.move(player.moveDir, v);
     player.animate();
 
     enemyList.forEach(function(e){

@@ -10,7 +10,10 @@
     <script type="text/javascript" src="js/spriteManager.js"></script>
     <script type="text/javascript" src="js/userInterface.js"></script>
     <script type="text/javascript" src="js/Game.js"></script>
-
+    <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
 
     <title> New Link </title>
   </head>
@@ -20,14 +23,16 @@
       margin: 0;
       background-color: #222;
     }
+    
   </style>
 
   <body>
-
     <script type="text/javascript" src='js/main.js'></script>
     <!--  Add Scripts for game here,
      later we will load the game on another page   -->
 
-
+     <script type="text/javascript">
+       $('body').on('contextmenu', 'canvas', function(e){return false;});
+     </script>
   </body>
 </html>

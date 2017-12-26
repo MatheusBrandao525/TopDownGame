@@ -13,6 +13,7 @@ const THROW = 7;
 var playerObj = function () {};
 
 playerObj.prototype = {
+  aggro: 0,
   walkSpeed: 75,
   runSpeed: 120,
   healthPoints: 7,
@@ -24,6 +25,7 @@ playerObj.prototype = {
   sprite: null,
   facing: 's',
   newFacing: 's',
+  moveDir: 's',
   isMoving: false,
   hasObject: false,
   heldObject: null,
@@ -103,28 +105,45 @@ playerObj.prototype = {
       }
     }
   },
-  command: function(keys){
+  command: function(keys, mouse){
 
     if(this.busy == false){
       if(keys.left.isDown){
         this.isMoving = true;
-        this.newFacing = 'w';
+        this.moveDir = 'w';
       }else if(keys.right.isDown){
         this.isMoving = true;
-        this.newFacing = 'e';
+        this.moveDir = 'e';
       }else if(keys.up.isDown){
         this.isMoving = true;
-        this.newFacing = 'n';
+        this.moveDir = 'n';
       }else if(keys.down.isDown){
         this.isMoving = true;
-        this.newFacing = 's';
+        this.moveDir = 's';
       }else{
         this.isMoving = false;
       }
     }
 
+    let mxDiff = mouse.x - this.sprite.x;
+    let myDiff = mouse.y - this.sprite.y;
 
-    if(keys.attack.isDown){ // Q Key
+    if(Math.abs(mxDiff) > Math.abs(myDiff)){ //Horizontal distance is greater
+      if(mxDiff > 0){
+        this.newFacing = 'e';
+      } else {
+        this.newFacing = 'w';
+      }
+    } else {
+      if(myDiff > 0){
+        this.newFacing = 's';
+      } else {
+        this.newFacing = 'n';
+      }
+    }
+
+
+    if(mouse.left){ // Q Key
       if(this.state != ATTACK && this.holding == false){
         this.isMoving = false;
         this.busyStart();
@@ -178,6 +197,9 @@ playerObj.prototype = {
           break;
       }
     }
+
+
+
     if(this.holding){
       let held = sm.heldObject.children[0];
       held.x = this.sprite.x + 1;
@@ -185,7 +207,7 @@ playerObj.prototype = {
     }
   },
   action: function(){
-    let obj = findCloseObject(TopDownGame.game);
+    let obj = findClosestObject(TopDownGame.game);
     //console.log(obj);
     if(obj) {
       switch(obj.action){
@@ -327,6 +349,27 @@ function notBusy() {
   busyTimer.stop();
   busyTimer.destroy();
   TopDownGame.player.busy = false;
+}
+
+function findClosestObject(game){
+  let player = TopDownGame.player;
+  let pSprite = player.sprite;
+  let current = 1000;
+  let curObj;
+  sm.objects.forEach(function(obj){
+    if(obj.action){
+      let tmp = game.physics.arcade.distanceBetween(pSprite, obj);
+      if(tmp < current){
+        current = tmp;
+        curObj = obj;
+      }
+    }
+  });
+  if(current < 25){
+    return curObj;
+  }else {
+    return null;
+  }
 }
 
 function findCloseObject(game){

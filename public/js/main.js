@@ -1,6 +1,6 @@
 var TopDownGame = TopDownGame || {};
 
-TopDownGame.game = new Phaser.Game(600, 350, Phaser.AUTO, '');
+TopDownGame.game = new Phaser.Game(600, 350, Phaser.CANVAS, '');
 
 
 

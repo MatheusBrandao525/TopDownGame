@@ -68,7 +68,7 @@ enemyUnit.prototype = {
     g.physics.arcade.collide(this.sprite, blockedLayer);
     if(this.isWaiting){
       //perform player check
-      console.log("Enemy Waiting");
+      
     }else {
       //perform player check
 
