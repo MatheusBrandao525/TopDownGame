@@ -20,6 +20,7 @@ TopDownGame.Preload.prototype = {
     this.load.spritesheet('overworld', 'assets/gfx/Overworld.png', 16, 16);
     this.load.spritesheet('inner', 'assets/gfx/Inner.png', 16, 16);
     this.load.spritesheet('objects', 'assets/gfx/objects.png', 16, 16);
+    this.load.image('inventory', 'assets/gfx/inventory.png');
 
     this.load.tilemap('test', 'assets/maps/test.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.tilemap('house', 'assets/maps/house.json', null, Phaser.Tilemap.TILED_JSON);

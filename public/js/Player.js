@@ -27,6 +27,8 @@ playerObj.prototype = {
   newFacing: 's',
   moveDir: 's',
   isMoving: false,
+  leftATK: '000',
+  rightATK: '000',
   hasObject: false,
   heldObject: null,
   equippedWeapon: null,
@@ -142,8 +144,16 @@ playerObj.prototype = {
       }
     }
 
-
     if(mouse.left){ // Q Key
+      if(this.state != ATTACK && this.holding == false){
+        this.isMoving = false;
+        this.busyStart();
+        this.sprite.animations.stop();
+        this.newState = ATTACK;
+      }
+    }
+
+    if(mouse.right){
       if(this.state != ATTACK && this.holding == false){
         this.isMoving = false;
         this.busyStart();

@@ -4,6 +4,8 @@ TopDownGame.Game = function () {};
 
 var background, paths, blocked, overlay;
 
+var waitTimer;
+
 var sm = new spriteManager();
 var ui = new userInterface();
 var enemyList = [];
@@ -15,6 +17,8 @@ var mouse = {
   right: null
 };
 TopDownGame.Game.prototype = {
+  paused: false, //Needs removed in multiplayer
+  pauseDelay: false,
   mapName: null,
   playerStart: 0,
   env: null,
@@ -25,7 +29,8 @@ TopDownGame.Game.prototype = {
     this.env = env;
   },
   create: function () {
-    this.game.scale.setGameSize(800, 600);
+    this.game.scale.setGameSize(533, 300);
+
     console.log(this.mapName);
     this.map = this.game.add.tilemap(this.mapName);
     this.map.addTilesetImage('env', this.env);
@@ -47,6 +52,8 @@ TopDownGame.Game.prototype = {
 
     background.resizeWorld();
 
+
+
     sm.loadMapObjects(this.game, this.map);
 
     enemyList.length = 0;
@@ -59,6 +66,8 @@ TopDownGame.Game.prototype = {
         enemyList.push(e);
       }, this);
     }
+
+
 
     let pStarts = this.findObjectsByType('playerStart', this.map, 'starts');
     let player = TopDownGame.player.sprite = sm.objects.create(pStarts[this.playerStart].x, pStarts[this.playerStart].y, 'player');
@@ -88,39 +97,52 @@ TopDownGame.Game.prototype = {
       left: TopDownGame.game.input.keyboard.addKey(Phaser.Keyboard.A),
       right: TopDownGame.game.input.keyboard.addKey(Phaser.Keyboard.D),
       use: TopDownGame.game.input.keyboard.addKey(Phaser.Keyboard.E),
-      attack: TopDownGame.game.input.keyboard.addKey(Phaser.Keyboard.Q)
+      attack: TopDownGame.game.input.keyboard.addKey(Phaser.Keyboard.Q),
+      menu: TopDownGame.game.input.keyboard.addKey(Phaser.Keyboard.TAB)
     };
 
   },
   update: function () {
-    let player = TopDownGame.player;
-    let sprite = player.sprite;
-    sprite.body.velocity.x = 0;
-    sprite.body.velocity.y = 0;
+    if(!this.paused){
+      let player = TopDownGame.player;
+      let sprite = player.sprite;
+      sprite.body.velocity.x = 0;
+      sprite.body.velocity.y = 0;
 
-    mouse.x = this.game.input.worldX;
-    mouse.y = this.game.input.worldY;
-    mouse.left = this.game.input.activePointer.leftButton.isDown;
-    mouse.right = this.game.input.activePointer.rightButton.isDown;
+      mouse.x = this.game.input.worldX;
+      mouse.y = this.game.input.worldY;
+      mouse.left = this.game.input.activePointer.leftButton.isDown;
+      mouse.right = this.game.input.activePointer.rightButton.isDown;
 
-    this.game.physics.arcade.collide(sprite, blocked);
-    this.game.physics.arcade.collide(sprite, sm.objects, player.touching, null, player);
+      this.game.physics.arcade.collide(sprite, blocked);
+      this.game.physics.arcade.collide(sprite, sm.objects, player.touching, null, player);
 
-    dropCheck(this.game);
-    doorCheck(this.game, this.doors);
+      dropCheck(this.game);
+      doorCheck(this.game, this.doors);
 
-    let v = player.walkSpeed;
-    if(this.game.input.keyboard.isDown(Phaser.Keyboard.SHIFT)){
-      v = player.runSpeed;
+      let v = player.walkSpeed;
+      if(this.game.input.keyboard.isDown(Phaser.Keyboard.SHIFT)){
+        v = player.runSpeed;
+      }
+
+      player.command(this.keys, mouse);
+      player.move(player.moveDir, v);
+      player.animate();
+
+      enemyList.forEach(function(e){
+        e.update(blocked);
+      });
+    }else {
+      //Do something here aka menu
+
     }
 
-    player.command(this.keys, mouse);
-    player.move(player.moveDir, v);
-    player.animate();
-
-    enemyList.forEach(function(e){
-      e.update(blocked);
-    });
+    if(this.keys.menu.isDown && !this.pauseDelay){
+      //this.paused = !this.paused;
+      //this.pauseDelay = true;
+    //  wait();
+      console.log("Paused: " + this.paused);
+    }
   },
   render: function () {
     bushCheck();
@@ -246,4 +268,17 @@ function throwObj(){
       obj.destroy();
     }, this);
   });
+}
+
+
+function wait(){
+  waitTimer = TopDownGame.game.time.create();
+  let event = waitTimer.add(1500, () => {
+    waitTimer.stop();
+    waitTimer.destroy();
+
+    this.pauseDelay = false;
+    console.log("wait over");
+  }, this);
+  waitTimer.start();
 }

@@ -29,7 +29,10 @@ userInterface.prototype = {
       this.hearts.push(hrt);
     }
 
-
+    let inv = game.add.sprite(50, 50, 'inventory');
+    inv.scale.setTo(.75, .75);
+    inv.fixedToCamera = true;
+    inv.visible = false;
 
     this.itemOrb = game.add.sprite(5, 5, 'UI');
     this.itemOrb.frameName = 'equipped';
