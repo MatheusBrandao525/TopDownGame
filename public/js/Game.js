@@ -7,6 +7,7 @@ var background, paths, blocked, overlay;
 var waitTimer;
 
 var sm = new spriteManager();
+var pm = new proManager();
 var ui = new userInterface();
 var enemyList = [];
 var busyTimer = null;
@@ -16,11 +17,15 @@ var mouse = {
   left: null,
   right: null
 };
+
+var bolt = null;
+
 TopDownGame.Game.prototype = {
   paused: false, //Needs removed in multiplayer
   pauseDelay: false,
   mapName: null,
   playerStart: 0,
+  actionLock: false,
   env: null,
   doors: null,
   init: function(mapName, env, playerStart) {
@@ -53,8 +58,9 @@ TopDownGame.Game.prototype = {
     background.resizeWorld();
 
 
-
+    pm.init(this);
     sm.loadMapObjects(this.game, this.map);
+
 
     enemyList.length = 0;
     if(this.map.objects['npc']){
@@ -82,8 +88,11 @@ TopDownGame.Game.prototype = {
 
     player.body.setSize(10, 10, 3, 18);
 
+    //bolt = sm.objects.create(-50, -50, 'fireBolt');
+
+
     ui.init(this.game);
-    ui.updateCoins(TopDownGame.player.coins);
+    //ui.updateCoins(TopDownGame.player.coins);
 
     this.map.setCollisionBetween(1, 5000, true, blocked);
 
@@ -125,6 +134,15 @@ TopDownGame.Game.prototype = {
         v = player.runSpeed;
       }
 
+      if(mouse.right && !this.actionLock){
+        pm.newSpell(this.game, sprite, "fireBolt", mouse);
+        this.actionLock = true;
+      }
+
+      if(!mouse.right && this.actionLock){
+        this.actionLock = false;
+      }
+
       player.command(this.keys, mouse);
       player.move(player.moveDir, v);
       player.animate();
@@ -138,10 +156,10 @@ TopDownGame.Game.prototype = {
     }
 
     if(this.keys.menu.isDown && !this.pauseDelay){
-      //this.paused = !this.paused;
-      //this.pauseDelay = true;
-    //  wait();
-      console.log("Paused: " + this.paused);
+      this.paused = !this.paused;
+      this.pauseDelay = true;
+      this.wait();
+      //ui.inv.visible = this.paused;
     }
   },
   render: function () {
@@ -149,6 +167,16 @@ TopDownGame.Game.prototype = {
     let player = TopDownGame.player;
     //this.game.debug.body(ui.exp);
 
+  },
+  wait: function(){
+    waitTimer = TopDownGame.game.time.create();
+    let event = waitTimer.add(1000, () => {
+      waitTimer.stop();
+      waitTimer.destroy();
+      this.pauseDelay = false;
+      //console.log("wait over");
+    }, this);
+    waitTimer.start();
   },
   findObjectsByType: function(type, map, layer) {
     var result = new Array();
@@ -173,13 +201,13 @@ function bushCheck() {
   sm.objects.forEach(function(obj){
     if(obj.objType && obj.objType == 'bush'){
       let d = game.physics.arcade.distanceBetween(player.sprite, obj);
-      if(d < 15 && obj.y > player.sprite.y + 5){
+      if(d <= 15 && obj.y > player.sprite.y + 1){
         obj.bringToTop();
       }
       enemyList.forEach(function(e){
         e.sprite.bringToTop();
         let d2 = game.physics.arcade.distanceBetween(e.sprite, obj);
-        if(d2 < 15 && obj.y > e.sprite.y + 5){
+        if(d2 < 15 && obj.y > e.sprite.y + 1){
           obj.bringToTop();
         }
       });
@@ -268,17 +296,4 @@ function throwObj(){
       obj.destroy();
     }, this);
   });
-}
-
-
-function wait(){
-  waitTimer = TopDownGame.game.time.create();
-  let event = waitTimer.add(1500, () => {
-    waitTimer.stop();
-    waitTimer.destroy();
-
-    this.pauseDelay = false;
-    console.log("wait over");
-  }, this);
-  waitTimer.start();
 }

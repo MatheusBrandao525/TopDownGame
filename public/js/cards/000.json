@@ -1,0 +1,9 @@
+{
+  "id": "000",
+  "name": "Firebolt",
+  "type": 0,
+  "cost": 2,
+  "power": 5,
+  "speed": 1,
+  "animation": "firebolt"
+}

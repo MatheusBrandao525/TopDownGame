@@ -16,6 +16,11 @@ TopDownGame.Preload.prototype = {
     this.load.atlas('items', 'assets/gfx/items.png', 'assets/gfx/items.json');
     this.load.atlas('NPC', 'assets/gfx/NPC_test.png', 'assets/gfx/NPC.json');
     this.load.atlas('UI', 'assets/gfx/UI.png', 'assets/gfx/UI.json');
+
+    //================ Spells Loaded here ==============================
+    //==================================================================
+    this.load.atlas('fireBolt', 'assets/gfx/fireBolt.png', 'assets/gfx/fireBolt.json');
+
     //this.load.spritesheet('player', 'assets/gfx/character.png', 16, 32);
     this.load.spritesheet('overworld', 'assets/gfx/Overworld.png', 16, 16);
     this.load.spritesheet('inner', 'assets/gfx/Inner.png', 16, 16);
