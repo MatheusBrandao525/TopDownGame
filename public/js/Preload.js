@@ -20,6 +20,7 @@ TopDownGame.Preload.prototype = {
     //================ Spells Loaded here ==============================
     //==================================================================
     this.load.atlas('fireBolt', 'assets/gfx/fireBolt.png', 'assets/gfx/fireBolt.json');
+    this.load.atlas('shield', 'assets/gfx/shield.png', 'assets/gfx/shield.json');
 
     //this.load.spritesheet('player', 'assets/gfx/character.png', 16, 32);
     this.load.spritesheet('overworld', 'assets/gfx/Overworld.png', 16, 16);

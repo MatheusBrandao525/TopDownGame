@@ -88,11 +88,11 @@ TopDownGame.Game.prototype = {
 
     player.body.setSize(10, 10, 3, 18);
 
-    //bolt = sm.objects.create(-50, -50, 'fireBolt');
+
 
 
     ui.init(this.game);
-    //ui.updateCoins(TopDownGame.player.coins);
+
 
     this.map.setCollisionBetween(1, 5000, true, blocked);
 
@@ -105,8 +105,8 @@ TopDownGame.Game.prototype = {
       down: TopDownGame.game.input.keyboard.addKey(Phaser.Keyboard.S),
       left: TopDownGame.game.input.keyboard.addKey(Phaser.Keyboard.A),
       right: TopDownGame.game.input.keyboard.addKey(Phaser.Keyboard.D),
-      use: TopDownGame.game.input.keyboard.addKey(Phaser.Keyboard.E),
-      attack: TopDownGame.game.input.keyboard.addKey(Phaser.Keyboard.Q),
+      spellTwo: TopDownGame.game.input.keyboard.addKey(Phaser.Keyboard.E),
+      spellOne: TopDownGame.game.input.keyboard.addKey(Phaser.Keyboard.Q),
       menu: TopDownGame.game.input.keyboard.addKey(Phaser.Keyboard.TAB)
     };
 
@@ -126,18 +126,21 @@ TopDownGame.Game.prototype = {
       this.game.physics.arcade.collide(sprite, blocked);
       this.game.physics.arcade.collide(sprite, sm.objects, player.touching, null, player);
 
-      dropCheck(this.game);
-      doorCheck(this.game, this.doors);
+      //dropCheck(this.game);
+      //doorCheck(this.game, this.doors);
 
       let v = player.walkSpeed;
       if(this.game.input.keyboard.isDown(Phaser.Keyboard.SHIFT)){
         v = player.runSpeed;
       }
 
+
+
       if(mouse.right && !this.actionLock){
-        pm.newSpell(this.game, sprite, "fireBolt", mouse);
-        this.actionLock = true;
+
       }
+
+      //pm.updateShields();
 
       if(!mouse.right && this.actionLock){
         this.actionLock = false;
@@ -163,9 +166,10 @@ TopDownGame.Game.prototype = {
     }
   },
   render: function () {
-    bushCheck();
+    //bushCheck();
     let player = TopDownGame.player;
-    //this.game.debug.body(ui.exp);
+    let total = spells.length;
+    this.game.debug.text("Spells: " + total, 25, 25);
 
   },
   wait: function(){
@@ -186,6 +190,7 @@ TopDownGame.Game.prototype = {
         //also keep in mind that the cup images are a bit smaller than the tile which is 16x16
         //so they might not be placed in the exact pixel position as in Tiled
         element.y -= map.tileHeight;
+        //element.anchor.setTo(0.5);
         result.push(element);
       }
     });

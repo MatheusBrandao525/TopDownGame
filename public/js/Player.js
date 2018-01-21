@@ -17,6 +17,7 @@ playerObj.prototype = {
   walkSpeed: 75,
   runSpeed: 120,
   healthPoints: 7,
+  casting: false,
   maxHealth: 12,
   sprite: null,
   facing: 's',
@@ -24,6 +25,7 @@ playerObj.prototype = {
   moveDir: 's',
   isMoving: false,
   leftATK: '000',
+  shield: null,
   rightATK: '000',
   hasObject: false,
   heldObject: null,
@@ -158,17 +160,37 @@ playerObj.prototype = {
       }
     }
 
-    if(keys.use.isDown){// E Key
-      this.isMoving = false;
-      if(this.busy == false){
-        if(this.holding && this.state != GRAB){
-          throwObj();
-        }else {
-          this.action();
-        }
-        this.busyStart();
-      }
+    if(keys.spellTwo.isDown && !this.casting){// E Key
+      let spellData = {
+        id: "001",
+        name: "Mana Shield",
+        type: SHIELD,
+        targetType: SELF,
+        spriteName: "shield",
+        lifeSpan: 12,
+        hp: 30,
+        count: 1
+      };
+      pm.newSpell(TopDownGame.game, this, spellData, mouse);
+      this.casting = true;
     }
+
+    if(keys.spellOne.isDown && !this.casting){// E Key
+      let spellData = {
+        id: "000",
+        name: "Firebolt",
+        type: PROJECTILE,
+        targetType: MOUSE,
+        spriteName: "fireBolt",
+        lifeSpan: 12,
+        hp: 30,
+        count: 1
+      };
+      pm.newSpell(TopDownGame.game, this, spellData, mouse);
+      this.casting = true;
+    }
+
+    if(keys.spellOne.isUp && keys.spellTwo.isUp){ this.casting = false;}
 
     if(this.isMoving){
       if(this.holding){
@@ -202,6 +224,7 @@ playerObj.prototype = {
           this.sprite.body.velocity.x = -speed;
           break;
       }
+
     }
 
 
@@ -260,6 +283,10 @@ playerObj.prototype = {
     }
   },
   animate: function() {
+    if(this.shield){
+      this.shield.sprite.x = this.sprite.x;
+      this.shield.sprite.y = this.sprite.y;
+    }
     //this.sprite.animations.currentAnim.loop = false;
     if(this.state == ATTACK && this.sprite.animations.currentAnim.isFinished) this.newState = IDLE;
 
