@@ -1,32 +1,35 @@
-var TopDownGame = {
-  // add variables as needed here
-  map: null,
-  game: null,
-  preload: function () {
-    this.game.load.spritesheet('player', 'assets/gfx/character.png', 16, 16);
-    this.game.load.spritesheet('overworld', 'assets/gfx/Overworld.png', 16, 16);
-    this.game.load.spritesheet('objects', 'assets/gfx/objects.png', 16, 16);
+// Cria um namespace para o jogo se ele não existir
+var TopDownGame = TopDownGame || {};
 
-    this.game.load.tilemap('test', 'assets/maps/test.json', null, Phaser.Tilemap.TILED_JSON);
+// Define a fase de inicialização do jogo.
+TopDownGame.Boot = function() {};
+
+// Define o protótipo de Boot, que contém as funções do ciclo de vida da fase.
+TopDownGame.Boot.prototype = {
+  // Função `preload` é chamada primeiro e serve para carregar os assets necessários nesta fase
+  preload: function() {
+    // Carrega uma imagem que será usada como barra de progresso do pré-carregamento
+    this.load.image('preloadbar', 'assets/images/preloader-bar.png');
   },
-  create: function() {
-    this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+
+  // Função `create` é chamada após o `preload` para configurar o ambiente do jogo
+  create: function () {
+    // Configura a cor de fundo do estágio do jogo
+    this.game.stage.backgroundColor = "#222";
+
+    // Configura o modo de escala para mostrar todo o jogo enquanto mantém a proporção original
+    this.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
+
+    // Alinha a página horizontalmente de forma centralizada
     this.scale.pageAlignHorizontally = true;
-    this.game.scale.pageAlignVertically = true;
-    this.game.physics.startSystem(phaser.physics.ARCADE);
 
-    this.map = this.game.add.tilemap('test');
-    this.map.addTilesetImage('outside', 'overworld');
-    this.map.addTilesetImage('obj', 'objects');
+    // Alinha a página verticalmente de forma centralizada
+    this.scale.pageAlignVertically = true;
 
-    var maplayer = map.createLayer('Tile Layer 1');
-    var maplayer = map.createLayer('Tile Layer 2');
-    var maplayer = map.createLayer('Tile Layer 3');
-  },
-  update: function() {
+    // Inicia o sistema de física ARCADE, um dos sistemas de física fornecidos pelo Phaser
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
 
-  },
-  render: function () {
-
+    // Inicia a próxima fase, neste caso 'Preload'
+    this.state.start('Preload');
   }
-}
+};
