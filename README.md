@@ -21,7 +21,7 @@ node app.js
 ```
 
 # Iformações adicionais
-Este projeto foi criado por [https://github.com/mcline86](mcline86) a atualizado por [https://github.com/MatheusBrandao525](MatheusBrandao525)
+Este projeto foi criado por [mcline86](https://github.com/mcline86) a atualizado por [MatheusBrandao525](https://github.com/MatheusBrandao525)
 
 ## Contribuições
 Qualquer contribuição para melhoria do projeto é bem-vinda!
